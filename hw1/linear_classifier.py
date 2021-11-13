@@ -23,7 +23,8 @@ class LinearClassifier(object):
 
         self.weights = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        self.weights = torch.normal(mean=torch.zeros(size=(self.n_features, self.n_classes)),
+                                    std=weight_std)
         # ========================
 
     def predict(self, x: Tensor):
@@ -45,7 +46,8 @@ class LinearClassifier(object):
 
         y_pred, class_scores = None, None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        class_scores = torch.mm(x, self.weights)
+        y_pred = torch.max(class_scores, dim=1).indices
         # ========================
 
         return y_pred, class_scores
@@ -66,7 +68,8 @@ class LinearClassifier(object):
 
         acc = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        res = y == y_pred
+        acc = torch.sum(res, dtype=torch.float64) / len(y)
         # ========================
 
         return acc * 100
@@ -102,7 +105,29 @@ class LinearClassifier(object):
             #     using the weight_decay parameter.
 
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            reg_term = self.weights.norm().pow(2) * (weight_decay / 2)
+
+            def calc_accuracy_and_loss(dl):
+                total_accuracy, total_loss = 0, 0
+                for x, y in dl:
+                    y_pred, class_scores = self.predict(x)
+                    total_accuracy += self.evaluate_accuracy(y, y_pred)
+                    total_loss += loss_fn.loss(x, y, class_scores, y_pred) + reg_term
+
+                    if is_training:
+                        grad = loss_fn.grad() + (self.weights * weight_decay)
+                        self.weights -= grad * learn_rate
+                return total_accuracy/len(dl), total_loss/len(dl)
+
+            def append_accuracy_and_loss(res_list, dl):
+                avg_accuracy, avg_loss = calc_accuracy_and_loss(dl)
+                res_list.accuracy.append(avg_accuracy)
+                res_list.loss.append(avg_loss)
+
+            is_training = True
+            append_accuracy_and_loss(train_res, dl_train)
+            is_training = False
+            append_accuracy_and_loss(valid_res, dl_valid)
             # ========================
             print(".", end="")
 
@@ -123,7 +148,10 @@ class LinearClassifier(object):
         #  The output shape should be (n_classes, C, H, W).
 
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        w = self.weights
+        if has_bias:
+            w = self.weights[:-1, :]
+        w_images = w.T.reshape((self.n_classes,) + img_shape)
         # ========================
 
         return w_images
@@ -136,7 +164,7 @@ def hyperparams():
     #  Manually tune the hyperparameters to get the training accuracy test
     #  to pass.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    hp = dict(weight_std=0.012, learn_rate=0.0065, weight_decay=0.0184)
     # ========================
 
     return hp
