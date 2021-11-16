@@ -55,26 +55,31 @@ that will fit best to unseen data, he is overfitting in attempt to get the best 
 part2_q1 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Lets look at the edge cases regarding this question:
+For k = 1 we only look at the most nearest neighbor.
+This can make an over-fit over our training set which is not
+good for a generalized model. On the other hand, for k = samples_num
+we will get the same answer for any sample, the class which appears
+the most in the training set. For the best k we need to pick a k which
+is in between 1 and samples_num and the exact point can change between
+different module. In out case we found out the the best k is 3 from k_choices.
 
 """
 
 part2_q2 = r"""
 **Your answer:**
 
+1. Using this suggestion will make our model over-fitting to the training set.
+In addition, we will train and test the model on the same set. In CV
+we will validate the model on a different and unseen test-set which can tell us
+better if the model is good and create better results.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. Using this suggestion will also our model over-fitting to the test set.
+We want our model to be as generalized as possible since we dont know what
+our real test-set will be. Therefore, k-fold is a better solution in which
+that we validate our result on a different test-set and training-set each
+time and make an average between different training-sets and test-sets to
+generalize our model which will create better results.
 
 """
 
@@ -86,39 +91,46 @@ An equation: $e^{i\pi} -1 = 0$
 part3_q1 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+We say that $\Delta$ is arbitrary because as long as $\Delta > 0$ the score for the correct class is higher than
+the other classes by $\Delta$ but the exact value is not important since the optimum will not change.
+In addition, the two parameters $\Delta$ and $\lambda$ are related and for each $\Delta > 0$ we 
+can find a $\lambda$ which will create a good results.
 
 """
 
 part3_q2 = r"""
 **Your answer:**
 
+1. The linear model is learning an average representation of each digit. He is finding the best weights 
+that will make the loss function minimal. When a test-sample is given the model calculate the score for each class 
+using the weights and return the class y_pred with the highest score. For test-sample of a digit which have unclear
+handwrite, the weights might be wrong because they only try to see how much is that sample is close to the average
+representation of the digit. For example, for the digit 9 which is unclear and look a little bit like 4 the model
+predicted 4 because the representation is closest to the average representation of 4 by the model weights.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. KNN does not save any weights, but save the whole training set. In some sense, he does not learn anything but
+save all of the learning materials. Then, he checks the labels of the k nearest example he has. It is not similar
+to linear classifier which is learning the weights that represent the average case from all of the training set.
+So linear classifier is looking for the average from all of the training set and KNN is looking for the most similar
+samples he has in the training set and return the label which appear most times. It is similar in that eventually
+both are trying to compare the test-sample to training-set samples (in average or k nearest).
+
 
 """
 
 part3_q3 = r"""
 **Your answer:**
 
+1. For a learn_rate which it too low the decrease in loss will be very slow for the training and validation sets.
+On the other hand, for a learn_rate which is too high the model can be over-fitting to the training-set and we will
+see good results (low loss) on the training set but not on the validation set and the model can get close and 
+far from the optimum and not be consistent in the loss graph. Our learn_rate is a good rate in the middle because
+we see that both training-set and validation-set are decreasing in a pretty good pace and stabilize after few epochs. 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. The model is slightly over-fitted to the training set because we can see that the loss on the training-set is
+lower then the validation-set and decreasing in a higher pace. This means that the model is better for the
+training set which indicates the he is slightly over-fitted to the training-set. The model is not highly over-fitted
+because the validation-set loss is also decreasing and stabilizing at later epochs.
 
 """
 
